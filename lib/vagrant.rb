@@ -186,6 +186,7 @@ Vagrant.guests.register(:ubuntu)  { Vagrant::Guest::Ubuntu }
 
 # Register the built-in provisioners
 Vagrant.provisioners.register(:chef_solo)     { Vagrant::Provisioners::ChefSolo }
+Vagrant.provisioners.register(:chef_solo_rvm) { Vagrant::Provisioners::ChefSoloRvm }
 Vagrant.provisioners.register(:chef_client)   { Vagrant::Provisioners::ChefClient }
 Vagrant.provisioners.register(:puppet)        { Vagrant::Provisioners::Puppet }
 Vagrant.provisioners.register(:puppet_server) { Vagrant::Provisioners::PuppetServer }
