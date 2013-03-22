@@ -117,9 +117,9 @@ module Vagrant
       end
 
       def set_module_paths
-        @module_paths = {}
+        @module_paths = []
         @expanded_module_paths.each_with_index do |path, i|
-          @module_paths[path] = File.join(config.pp_path, "modules-#{i}")
+          @module_paths << [path, File.join(config.pp_path, "modules-#{i}")]
         end
       end
 
@@ -136,7 +136,8 @@ module Vagrant
 
       def run_puppet_client
         options = [config.options].flatten
-        options << "--modulepath '#{@module_paths.values.join(':')}'" if !@module_paths.empty?
+        module_paths = @module_paths.map { |_, to| to }
+        options << "--modulepath '#{module_paths.join(':')}'" if !@module_paths.empty?
         options << @manifest_file
         options = options.join(" ")
 
@@ -151,7 +152,7 @@ module Vagrant
           facter = "#{facts.join(" ")} "
         end
 
-        command = "cd #{manifests_guest_path} && #{facter}puppet apply #{options}"
+        command = "cd #{manifests_guest_path} && #{facter}puppet apply #{options} --detailed-exitcodes || [ $? -eq 2 ]"
 
         env[:ui].info I18n.t("vagrant.provisioners.puppet.running_puppet",
                              :manifest => @manifest_file)

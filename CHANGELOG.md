@@ -1,3 +1,49 @@
+## 1.0.7 (March 13, 2013)
+
+  - Detect if a newer version of Vagrant ran and error if it did,
+    because we're not forward-compatible.
+  - Check for guest additions version AFTER booting. [GH-1179]
+  - Quote IdentityFile in `ssh-config` so private keys with spaces in
+    the path work. [GH-1322]
+  - Fix issue where multiple Puppet module paths can be re-ordered [GH-964]
+  - Shell provisioner won't hang on Windows anymore due to unclosed
+    tempfile. [GH-1040]
+  - Retry setting default VM name, since it sometimes fails first time. [GH-1368]
+  - Support setting hostname on Suse [GH-1063]
+
+## 1.0.6 (December 21, 2012)
+
+  - Shell provisioner outputs proper line endings on Windows [GH-1164]
+  - SSH upload opens file to stream which fixes strange upload issues.
+  - Check for proper exit codes for Puppet, since multiple exit codes
+    can mean success. [GH-1180]
+  - Fix issue where DNS doesn't resolve properly for 12.10. [GH-1176]
+  - Allow hostname to be a substring of the box name for Ubuntu [GH-1163]
+  - Use `puppet agent` instead of `puppetd` to be Puppet 3.x
+    compatible. [GH-1169]
+  - Work around bug in VirtualBox exposed by bug in OS X 10.8 where
+    VirtualBox executables couldn't handle garbage being injected into
+    stdout by OS X.
+
+## 1.0.5 (September 18, 2012)
+
+  - Work around a critical bug in VirtualBox 4.2.0 on Windows that
+    causes Vagrant to not work. [GH-1130]
+  - Plugin loading works better on Windows by using the proper
+    file path separator.
+  - NFS works on Fedora 16+. [GH-1140]
+  - NFS works with newer versions of Arch hosts that use systemd. [GH-1142]
+
+## 1.0.4 (September 13, 2012)
+
+  - VirtualBox 4.2 driver. [GH-1120]
+  - Correct `ssh-config` help to use `--host`, not `-h`.
+  - Use "127.0.0.1" instead of "localhost" for port checking to fix problem
+    where "localhost" is not properly setup. [GH-1057]
+  - Disable read timeout on Net::HTTP to avoid `rbuf_fill` error. [GH-1072]
+  - Retry SSH on `EHOSTUNREACH` errors.
+  - Add missing translation for "saving" state. [GH-1110]
+
 ## 1.0.3 (May 1, 2012)
 
   - Don't enable NAT DNS proxy on machines where resolv.conf already points

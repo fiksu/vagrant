@@ -446,6 +446,11 @@ module Vagrant
                                                  DEFAULT_HOME))
       @logger.info("Home path: #{@home_path}")
 
+      # If the setup_version file exists, then we can't load because we're
+      # not forward compatible. It means they ran a future version of Vagrant.
+      raise Errors::IncompatibleWithFutureVersion, :path => @home_path.to_s if \
+        @home_path.join("setup_version").file?
+
       # Setup the array of necessary home directories
       dirs = [@home_path]
       dirs += HOME_SUBDIRS.collect { |subdir| @home_path.join(subdir) }
@@ -507,7 +512,7 @@ module Vagrant
     def load_plugins
       # Add our private gem path to the gem path and reset the paths
       # that Rubygems knows about.
-      ENV["GEM_PATH"] = "#{@gems_path}:#{ENV["GEM_PATH"]}"
+      ENV["GEM_PATH"] = "#{@gems_path}#{::File::PATH_SEPARATOR}#{ENV["GEM_PATH"]}"
       ::Gem.clear_paths
 
       # Load the plugins
