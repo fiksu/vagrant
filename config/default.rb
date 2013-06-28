@@ -8,6 +8,7 @@ Vagrant.configure("2") do |config|
   config.ssh.max_tries = 100
   config.ssh.timeout = 30
   config.ssh.shell = "bash -l"
+  config.ssh.rvmsudo = false
 
   config.ssh.default.username = "vagrant"
 
@@ -17,7 +18,7 @@ Vagrant.configure("2") do |config|
   config.vm.graceful_halt_retry_count = 60
   config.vm.graceful_halt_retry_interval = 1
   config.vm.guest = :linux
-
+  
   # Share SSH locally by default
   config.vm.network :forwarded_port,
     guest: 22,

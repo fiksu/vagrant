@@ -150,13 +150,25 @@ module VagrantPlugins
               @machine.env.ui.info I18n.t("vagrant.provisioners.chef.running_solo_again")
             end
 
-            exit_status = @machine.communicate.sudo(command, :error_check => false) do |type, data|
-              # Output the data with the proper color based on the stream.
-              color = type == :stdout ? :green : :red
+            # Check to see if I should use rvmsudo.
+            if @machine.config.ssh.rvmsudo == true
+              exit_status = @machine.communicate.rvmsudo(command, :error_check => false) do |type, data|
+                # Output the data with the proper color based on the stream.
+                color = type == :stdout ? :green : :red
 
-              # Note: Be sure to chomp the data to avoid the newlines that the
-              # Chef outputs.
-              @machine.env.ui.info(data.chomp, :color => color, :prefix => false)
+                # Note: Be sure to chomp the data to avoid the newlines that the
+                # Chef outputs.
+                @machine.env.ui.info(data.chomp, :color => color, :prefix => false)
+              end
+            else
+              exit_status = @machine.communicate.sudo(command, :error_check => false) do |type, data|
+                # Output the data with the proper color based on the stream.
+                color = type == :stdout ? :green : :red
+
+                # Note: Be sure to chomp the data to avoid the newlines that the
+                # Chef outputs.
+                @machine.env.ui.info(data.chomp, :color => color, :prefix => false)
+              end
             end
 
             # There is no need to run Chef again if it converges
