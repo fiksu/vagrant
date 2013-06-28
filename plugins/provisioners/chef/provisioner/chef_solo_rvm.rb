@@ -141,7 +141,7 @@ module VagrantPlugins
 
           command_env = @config.binary_env ? "#{@config.binary_env} " : ""
           command_args = @config.arguments ? " #{@config.arguments}" : ""
-          command = "rvmsudo #{command_env}#{chef_binary_path("chef-solo")} -c #{@config.provisioning_path}/solo.rb -j #{@config.provisioning_path}/dna.json #{command_args}"
+          command = "#{command_env}#{chef_binary_path("chef-solo")} -c #{@config.provisioning_path}/solo.rb -j #{@config.provisioning_path}/dna.json #{command_args}"
 
           @config.attempts.times do |attempt|
             if attempt == 0
@@ -150,7 +150,7 @@ module VagrantPlugins
               @machine.env.ui.info I18n.t("vagrant.provisioners.chef.running_solo_again")
             end
 
-            exit_status = @machine.communicate.sudo(command, :error_check => false) do |type, data|
+            exit_status = @machine.communicate.rvmsudo(command, :error_check => false) do |type, data|
               # Output the data with the proper color based on the stream.
               color = type == :stdout ? :green : :red
 

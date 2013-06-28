@@ -53,12 +53,13 @@ module VagrantPlugins
           :error_class => Vagrant::Errors::VagrantError,
           :error_key   => :ssh_bad_exit_status,
           :command     => command,
-          :sudo        => false
+          :sudo        => false,
+          :rvmsudo     => false
         }.merge(opts || {})
 
         # Connect via SSH and execute the command in the shell.
         exit_status = connect do |connection|
-          shell_execute(connection, command, opts[:sudo], &block)
+          shell_execute(connection, command, opts[:sudo], opts[:rvmsudo], &block)
         end
 
         # Check for any errors
@@ -77,6 +78,12 @@ module VagrantPlugins
       def sudo(command, opts=nil, &block)
         # Run `execute` but with the `sudo` option.
         opts = { :sudo => true }.merge(opts || {})
+        execute(command, opts, &block)
+      end
+
+      def rvmsudo(command, opts=nil, &block)
+        # Run `execute` but with the `rvmsudo` option.
+        opts = { :rvmsudo => true }.merge(opts || {})
         execute(command, opts, &block)
       end
 
@@ -249,14 +256,15 @@ module VagrantPlugins
       end
 
       # Executes the command on an SSH connection within a login shell.
-      def shell_execute(connection, command, sudo=false)
-        @logger.info("Execute: #{command} (sudo=#{sudo.inspect})")
+      def shell_execute(connection, command, sudo=false, rvmsudo=false)
+        @logger.info("Execute: #{command} (sudo=#{sudo.inspect}) (rvmsudo=#{rvmsudo.inspect})")
         exit_status = nil
 
         # Determine the shell to execute. If we are using `sudo` then we
         # need to wrap the shell in a `sudo` call.
         shell = @machine.config.ssh.shell
         shell = "sudo -H #{shell}" if sudo
+        shell = "rvmsudo -H #{shell}" if rvmsudo
 
         # Open the channel so we can execute or command
         channel = connection.open_channel do |ch|
