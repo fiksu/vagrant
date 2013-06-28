@@ -264,7 +264,7 @@ module VagrantPlugins
         # need to wrap the shell in a `sudo` call.
         shell = @machine.config.ssh.shell
         shell = "sudo -H #{shell}" if sudo
-        shell = "rvmsudo -H #{shell}" if rvmsudo
+        shell = "rvmsudo #{shell}" if rvmsudo
 
         # Open the channel so we can execute or command
         channel = connection.open_channel do |ch|
